@@ -27,13 +27,15 @@ module.exports = function(passport){
 						"Idaho":["Current $ Personal Income","Retail Sales","Wage & Salary Employment","Population Growth","Single-Family Housing Permits"],
 						"Montana":["Current $ Personal Income","Retail Sales","Wage & Salary Employment","Population Growth","Single-Family Housing Permits"],
 						"Nevada":["Current $ Personal Income","Gross Gaming Revenue","Wage & Salary Employment","Population Growth","Single-Family Housing Permits"],
-						"New Mexico":["Current $ Personal Income","Manufacturing Employment","Wage & Salary Employment","Population Growth","Single-Family Housing Permits"],
+						"New mexico":["Current $ Personal Income","Manufacturing Employment","Wage & Salary Employment","Population Growth","Single-Family Housing Permits"],
 						"Oregon":["Current $ Personal Income","Manufacturing Employment","Wage & Salary Employment","Population Growth","Single-Family Housing Permits"],
 						"Texas":["Current $ Personal Income","Retail Sales","Wage & Salary Employment","Population Growth","Single-Family Housing Permits"],
 						"Utah":["Current $ Personal Income","Retail Sales","Wage & Salary Employment","Population Growth","Single-Family Housing Permits"],
 						"Washington":["Current $ Personal Income","Retail Sales","Wage & Salary Employment","Population Growth","Single-Family Housing Permits"],
 						"Wyoming":["Current $ Personal Income","Retail Sales","Wage & Salary Employment","Population Growth","Single-Family Housing Permits"]
 					}
+
+
 
 
 	router.get('/addUserPreference', function(req, res){
@@ -105,7 +107,7 @@ module.exports = function(passport){
 				
 		var userJson = [];
 		var userStates = [];
-		var allStates = ["Arizona","California","Colorado","Idaho","Montana","Nevada","New mexico","Oregon","Texas","Utah","Washington","Wyoming"];
+		var allStates = ["Arizona","California","Colorado","Idaho","Montana","Nevada","New Mexico","Oregon","Texas","Utah","Washington","Wyoming"];
 		var userSurveyState = [];
 
 		console.log("making user Json for schema");
@@ -233,6 +235,7 @@ module.exports = function(passport){
 		  if (!err) {
 		   console.log(result);
 		   console.log(result[0].states);
+		   console.log(questions['arizona'])
 		   res.render('home', { user: req.user, states: result[0].states, surveyQuestions: questions });
 		  } else {
 		    console.log('Error occured');

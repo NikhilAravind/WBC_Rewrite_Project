@@ -1,21 +1,54 @@
 extends layout
 
+- var arr= states;
+- var questions= JSON.stringify(surveyQuestions);
+
+
 block content
+
+	script.
+		function clearInputFields(val){ 
+		document.getElementById('q1'+val.id).value = ''; 
+		document.getElementById('q2'+val.id).value = '';
+		document.getElementById('q3'+val.id).value = '';
+		document.getElementById('q4'+val.id).value = '';
+		document.getElementById('q5'+val.id).value = '';
+		document.getElementById('q6'+val.id).value = '';
+		document.getElementById('q7'+val.id).value = '';
+		document.getElementById('q8'+val.id).value = '';
+		document.getElementById('q9'+val.id).value = '';
+		document.getElementById('q10'+val.id).value = '';
+		};
+
+		function clearAllFields(){
+			var allInputs = document.getElementsByTagName("input");
+			for(var i = 0; i<allInputs.length;i++){
+				if(allInputs[i].type=='text')
+					allInputs[i].value = '';
+			}
+		}
+
+
 	div.container
 		div.row
+
 			div.col-sm-10.col-md-16.col-md-offset-1
-				a(href='/signout', class='text-center new-account') Sign Out
+				a(href='/signout', class='text-right new-account') Sign Out
 				#user
 					h1.text-center.login-title Welcome #{user.firstName}. Please find the survey questions below:
 
 						- var arr= states;
-						- var questions = surveyQuestions;
-						- var thisYear = ' 2015';
-						- var nextYear = ' 2016';
-						
+						- var questions= surveyQuestions;
+						br
+						br
+						br
+						br
+						br
+						br
+											
 						form
 							each val in arr
-								div.signup-wall
+								div(id= val).signup-wall
 									b
 										p= val
 										table(border=0)
@@ -25,27 +58,27 @@ block content
 													td
 														label.questions= question
 														&#32;&#32;&#32;
-
+											
 											tr
-												td.
+												td
 													<p>&nbsp;&nbsp;2015</p>
 												td
 													&nbsp;&nbsp;&nbsp;
-													input.border#q1(type="text", name="q1", value="", size="5")
+													input.border(id= 'q1'+val)(type="text", name="q1", value="", size="5")
 													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 												td
 													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-													input.border#q2(type="text", name="q1", value="", size="5")
+													input.border(id= 'q2'+val)(type="text", name="q1", value="", size="5")
 													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 												td
-													input.border#q3(type="text", name="q1", value="", size="5")
+													input.border(id= 'q3'+val)(type="text", name="q1", value="", size="5")
 													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 												td
 													&nbsp;&nbsp;&nbsp;
-													input.border#q4(type="text", name="q1", value="", size="5")
+													input.border(id= 'q4'+val)(type="text", name="q1", value="", size="5")
 													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 												td
-													input.border#q5(type="text", name="q1", value="", size="5")
+													input.border(id= 'q5'+val)(type="text", name="q1", value="", size="5")
 													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 
 											tr
@@ -53,29 +86,45 @@ block content
 													<p>&nbsp;&nbsp;2016</p>
 												td
 													&nbsp;&nbsp;&nbsp;
-													input.border#q6(type="text", name="q1", value="", size="5")
+													input.border(id= 'q6'+val)(type="text", name="q1", value="", size="5")
 													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 												td
 													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-													input.border#q7(type="text", name="q1", value="", size="5")
+													input.border(id= 'q7'+val)(type="text", name="q1", value="", size="5")
 													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 												td
-													input.border#q8(type="text", name="q1", value="", size="5")
+													input.border(id= 'q8'+val)(type="text", name="q1", value="", size="5")
 													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 												td
 													&nbsp;&nbsp;&nbsp;
-													input.border#q9(type="text", name="q1", value="", size="5")
+													input.border(id= 'q9'+val)(type="text", name="q1", value="", size="5")
 													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 												td
-													input.border#q10(type="text", name="q1", value="", size="5")
+													input.border(id= 'q10'+val)(type="text", name="q1", value="", size="5")
 													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 
+										button.btn(id= val)(type="button", onclick="javascript:clearInputFields(this)", style="float: right;")
+											span.
+												Clear
+
+										br
+										br
+										
+										
 
 
 								ul.user-details
-									&nbsp
-									&nbsp
-									&nbsp
-									&nbsp
+							
+							button.btn(type="button", onclick="")
+								span.
+									Submit
+							&nbsp;
+							&nbsp;
+							&nbsp;
+							button.btn(type="button", onclick="javascript:clearAllFields()")
+								span.
+									Clear All Fields
+							
+									
 
 						
