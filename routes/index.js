@@ -20,6 +20,21 @@ var isAuthenticated = function (req, res, next) {
 
 module.exports = function(passport){
 
+	var questions = {
+						"Arizona": ["Current $ Personal Income","Retail Sales","Wage & Salary Employment","Population Growth","Single-Family Housing Permits"],
+						"California":["Current $ Personal Income","Retail Sales","Wage & Salary Employment","Population Growth","Single-Family Housing Permits"],
+						"Colorado":["Current $ Personal Income","Retail Sales","Wage & Salary Employment","Population Growth","Single-Family Housing Permits"],
+						"Idaho":["Current $ Personal Income","Retail Sales","Wage & Salary Employment","Population Growth","Single-Family Housing Permits"],
+						"Montana":["Current $ Personal Income","Retail Sales","Wage & Salary Employment","Population Growth","Single-Family Housing Permits"],
+						"Nevada":["Current $ Personal Income","Gross Gaming Revenue","Wage & Salary Employment","Population Growth","Single-Family Housing Permits"],
+						"New Mexico":["Current $ Personal Income","Manufacturing Employment","Wage & Salary Employment","Population Growth","Single-Family Housing Permits"],
+						"Oregon":["Current $ Personal Income","Manufacturing Employment","Wage & Salary Employment","Population Growth","Single-Family Housing Permits"],
+						"Texas":["Current $ Personal Income","Retail Sales","Wage & Salary Employment","Population Growth","Single-Family Housing Permits"],
+						"Utah":["Current $ Personal Income","Retail Sales","Wage & Salary Employment","Population Growth","Single-Family Housing Permits"],
+						"Washington":["Current $ Personal Income","Retail Sales","Wage & Salary Employment","Population Growth","Single-Family Housing Permits"],
+						"Wyoming":["Current $ Personal Income","Retail Sales","Wage & Salary Employment","Population Growth","Single-Family Housing Permits"]
+					}
+
 
 	router.get('/addUserPreference', function(req, res){
 
@@ -88,11 +103,9 @@ module.exports = function(passport){
 		  ["yasuo.nishiyama@woodbury.edu","Woodbury University","0","1","0","0","0","0","0","0","0","0","0","0"  ]
 		]
 				
-
-
 		var userJson = [];
 		var userStates = [];
-		var allStates = ["arizona","california","colorado","idaho","montana","nevada","new mexico","oregon","texas","utah","washington","wyoming"];
+		var allStates = ["Arizona","California","Colorado","Idaho","Montana","Nevada","New mexico","Oregon","Texas","Utah","Washington","Wyoming"];
 		var userSurveyState = [];
 
 		console.log("making user Json for schema");
@@ -150,13 +163,14 @@ module.exports = function(passport){
 
 	router.get('/removeSurveyUsers', function(req, res){
 
-		mongoose.connection.db.dropCollection('users', function(err, result) {
+		mongoose.connection.db.dropCollection('surveyUsers', function(err, result) {
 			if(!err)
 				console.log('all users dropped');
 		});
 		
 	});
 
+	
 
 	router.get('/getAllUsers', function(req, res){
 
@@ -219,7 +233,7 @@ module.exports = function(passport){
 		  if (!err) {
 		   console.log(result);
 		   console.log(result[0].states);
-		   res.render('home', { user: req.user, states: result[0].states });
+		   res.render('home', { user: req.user, states: result[0].states, surveyQuestions: questions });
 		  } else {
 		    console.log('Error occured');
 		  };

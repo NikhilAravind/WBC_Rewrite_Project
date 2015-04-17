@@ -3,19 +3,79 @@ extends layout
 block content
 	div.container
 		div.row
-			div.col-sm-6.col-md-4.col-md-offset-4
+			div.col-sm-10.col-md-16.col-md-offset-1
+				a(href='/signout', class='text-center new-account') Sign Out
 				#user
 					h1.text-center.login-title Welcome #{user.firstName}. Please find the survey questions below:
 
 						- var arr= states;
+						- var questions = surveyQuestions;
+						- var thisYear = ' 2015';
+						- var nextYear = ' 2016';
 						
-						each val in arr
-							div.signup-wall
-								p= val
-							ul.user-details
-								&nbsp
-								&nbsp
-								&nbsp
-								&nbsp
+						form
+							each val in arr
+								div.signup-wall
+									b
+										p= val
+										table(border=0)
+											tr
+												td
+												each question in questions[val]
+													td
+														label.questions= question
+														&#32;&#32;&#32;
 
-						a(href='/signout', class='text-center new-account') Sign Out
+											tr
+												td.
+													<p>&nbsp;&nbsp;2015</p>
+												td
+													&nbsp;&nbsp;&nbsp;
+													input.border#q1(type="text", name="q1", value="", size="5")
+													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+												td
+													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+													input.border#q2(type="text", name="q1", value="", size="5")
+													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+												td
+													input.border#q3(type="text", name="q1", value="", size="5")
+													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+												td
+													&nbsp;&nbsp;&nbsp;
+													input.border#q4(type="text", name="q1", value="", size="5")
+													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+												td
+													input.border#q5(type="text", name="q1", value="", size="5")
+													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+											tr
+												td
+													<p>&nbsp;&nbsp;2016</p>
+												td
+													&nbsp;&nbsp;&nbsp;
+													input.border#q6(type="text", name="q1", value="", size="5")
+													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+												td
+													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+													input.border#q7(type="text", name="q1", value="", size="5")
+													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+												td
+													input.border#q8(type="text", name="q1", value="", size="5")
+													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+												td
+													&nbsp;&nbsp;&nbsp;
+													input.border#q9(type="text", name="q1", value="", size="5")
+													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+												td
+													input.border#q10(type="text", name="q1", value="", size="5")
+													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+
+
+								ul.user-details
+									&nbsp
+									&nbsp
+									&nbsp
+									&nbsp
+
+						
