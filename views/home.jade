@@ -37,8 +37,10 @@ block content
 				#user
 					h1.text-center.login-title Welcome #{user.firstName}. Please find the survey questions below:
 
+					
 						- var arr= states;
 						- var questions= surveyQuestions;
+						- var allPredictions= answers; 
 						br
 						br
 						br
@@ -46,7 +48,10 @@ block content
 						br
 						br
 											
-						form
+						form(method="post", action="/submit")
+							input(type="hidden", name="username", value='#{user.username}')
+							input(type="hidden", name="email", value='#{user.email}')
+							- var i = 0;
 							each val in arr
 								div(id= val).signup-wall
 									b
@@ -64,21 +69,21 @@ block content
 													<p>&nbsp;&nbsp;2015</p>
 												td
 													&nbsp;&nbsp;&nbsp;
-													input.border(id= 'q1'+val)(type="text", name="q1", value="", size="5")
+													input.border(id= 'q1'+val)(type="text", name="q1"+val, value=(allPredictions?(allPredictions[i]?(allPredictions[i][0]?allPredictions[i][0]:''):''):''), size="5")
 													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 												td
 													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-													input.border(id= 'q2'+val)(type="text", name="q1", value="", size="5")
+													input.border(id= 'q2'+val)(type="text", name="q2"+val, value=(allPredictions?(allPredictions[i]?(allPredictions[i][1]?allPredictions[i][1]:''):''):''), size="5")
 													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 												td
-													input.border(id= 'q3'+val)(type="text", name="q1", value="", size="5")
+													input.border(id= 'q3'+val)(type="text", name="q3"+val, value=(allPredictions?(allPredictions[i]?(allPredictions[i][2]?allPredictions[i][2]:''):''):''), size="5")
 													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 												td
 													&nbsp;&nbsp;&nbsp;
-													input.border(id= 'q4'+val)(type="text", name="q1", value="", size="5")
+													input.border(id= 'q4'+val)(type="text", name="q4"+val, value=(allPredictions?(allPredictions[i]?(allPredictions[i][3]?allPredictions[i][3]:''):''):''), size="5")
 													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 												td
-													input.border(id= 'q5'+val)(type="text", name="q1", value="", size="5")
+													input.border(id= 'q5'+val)(type="text", name="q5"+val, value=(allPredictions?(allPredictions[i]?(allPredictions[i][4]?allPredictions[i][4]:''):''):''), size="5")
 													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 
 											tr
@@ -86,21 +91,21 @@ block content
 													<p>&nbsp;&nbsp;2016</p>
 												td
 													&nbsp;&nbsp;&nbsp;
-													input.border(id= 'q6'+val)(type="text", name="q1", value="", size="5")
+													input.border(id= 'q6'+val)(type="text", name="q6"+val, value=(allPredictions?(allPredictions[i]?(allPredictions[i][5]?allPredictions[i][5]:''):''):''), size="5")
 													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 												td
 													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-													input.border(id= 'q7'+val)(type="text", name="q1", value="", size="5")
+													input.border(id= 'q7'+val)(type="text", name="q7"+val, value=(allPredictions?(allPredictions[i]?(allPredictions[i][6]?allPredictions[i][6]:''):''):''), size="5")
 													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 												td
-													input.border(id= 'q8'+val)(type="text", name="q1", value="", size="5")
+													input.border(id= 'q8'+val)(type="text", name="q8"+val, value=(allPredictions?(allPredictions[i]?(allPredictions[i][7]?allPredictions[i][7]:''):''):''), size="5")
 													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 												td
 													&nbsp;&nbsp;&nbsp;
-													input.border(id= 'q9'+val)(type="text", name="q1", value="", size="5")
+													input.border(id= 'q9'+val)(type="text", name="q9"+val, value=(allPredictions?(allPredictions[i]?(allPredictions[i][8]?allPredictions[i][8]:''):''):''), size="5")
 													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 												td
-													input.border(id= 'q10'+val)(type="text", name="q1", value="", size="5")
+													input.border(id= 'q10'+val)(type="text", name="q10"+val, value=(allPredictions?(allPredictions[i]?(allPredictions[i][9]?allPredictions[i][9]:''):''):''), size="5")
 													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 
 										button.btn(id= val)(type="button", onclick="javascript:clearInputFields(this)", style="float: right;")
@@ -110,12 +115,12 @@ block content
 										br
 										br
 										
-										
+									- i = i + 1;	
 
 
 								ul.user-details
 							
-							button.btn(type="button", onclick="")
+							button.btn(type="submit")
 								span.
 									Submit
 							&nbsp;

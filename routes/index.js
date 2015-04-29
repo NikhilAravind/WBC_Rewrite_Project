@@ -8,6 +8,18 @@ var mongoose = require ("mongoose");
 var userSchema = require('./userschema.js').userSchema
 var user = mongoose.model('userSchema', userSchema,'surveyUsers')
 
+var predictionSchema = require('./predictionSchema.js').predictionSchema
+var prediction = mongoose.model('predictionSchema', predictionSchema,'surveyUsers')
+
+var bodyParser = require('body-parser')
+router.use(bodyParser.json() );       // to support JSON-encoded bodies
+router.use(bodyParser.urlencoded({     // to support URL-encoded bodies
+  extended: true
+})); 
+
+router.use(bodyParser.json());
+router.use(bodyParser.urlencoded());   
+
 var isAuthenticated = function (req, res, next) {
 	// if user is authenticated in the session, call the next() to call the next request handler 
 	// Passport adds this method to request object. A middleware is allowed to add properties to
@@ -233,17 +245,136 @@ module.exports = function(passport){
 
 		user.find({user_email: req.user.email}).exec(function(err, result) {
 		  if (!err) {
-		   console.log(result);
-		   console.log(result[0].states);
-		   console.log(questions['arizona'])
-		   res.render('home', { user: req.user, states: result[0].states, surveyQuestions: questions });
+
+
+		  	prediction.find({username:req.user.username}).exec(function(err, data){
+
+		  		
+
+		  		if(data[0]!=undefined && data[0].predictions[0]!=undefined){
+		  			console.log("******* " + data[0]);
+		  			var userPred = []
+			  		if(data[0].predictions[0].length>1 && data[0].predictions[0].indexOf(",")>-1){
+			  			
+			  			var arr = [];
+			  			console.log(data[0].predictions.length)
+			  			for (var i = 0; i < data[0].predictions.length; i++) {
+			  				console.log("^^^^^^^^^^ " + i)
+			  				arr.push(data[0].predictions[i].split(","));
+			  			};
+			  			
+			  			console.log("Array length = " + arr.length)
+			  			console.log(arr);
+
+			  			var temp = [];
+
+			  			/*for (var i = 0; i < arr.length; i++) {
+			  			 	
+			  			 	if((i+1)%10==0){
+			  			 		temp.push(arr[i]);
+			  			 		userPred.push(temp);
+			  			 		temp = [];
+			  			 	}else{
+			  			 		temp.push(arr[i]);
+			  			 	}
+			  			}; */
+
+		  		}
+		  		
+
+		  		//console.log(userPred);
+		  		
+		  			console.log("data available = "+ data[0] )
+		  			res.render('home', { user: req.user, states: result[0].states, surveyQuestions: questions, answers: arr });
+		  		}
+		  		else{
+		  			console.log("data unavailable")
+		  			res.render('home', { user: req.user, states: result[0].states, surveyQuestions: questions });
+		  		}
+
+
+		  	});
+
 		  } else {
 		    console.log('Error occured');
 		  };
 		});
+	});
+
+
+	/* POST Submit */
+	router.post('/submit', isAuthenticated, function(req, res){
+
+		console.log(req.user.username)
+		console.log(req.user.email)
+		//console.log(req.body.q1Arizona)
+
+		user.find({user_email: req.user.email}).exec(function(err, result) {
+		  if (!err) {
+		  var numberOfStates = result[0].states.length;
+
+		  //console.log(result[0].states)
+		  //console.log(req.body["q1"+result[0].states[0]]);
+
+		  
+		   
+		   var projectionsForAState = [];
+		   var allStateProjections = [];
+
+			   for (var i = 0; i < numberOfStates; i++) {
+			   	   	for (var j = 1; j < 11; j++) {
+			   	   		//console.log("q"+j+result[0].states[i]);
+				   		//console.log(req.body["q"+j+result[0].states[i]]);
+				   		projectionsForAState.push(req.body["q"+j+result[0].states[i]]);
+				   	};
+				   	allStateProjections.push(projectionsForAState);
+				   	projectionsForAState = [];
+
+			   };
+
+
+			   console.log(allStateProjections);
+
+			var userPrediction = new prediction({
+				username: req.user.username,
+				email: req.user.email,
+				predictions: allStateProjections
+			});
+
+			var upsertData = userPrediction.toObject();
+
+			// Delete the _id property, otherwise Mongo will return a "Mod on _id not allowed" error
+			delete upsertData._id;
+
+			prediction.update({username: req.user.username}, upsertData, {upsert: true}, function(err){
+				if(!err){
+					console.log("User predictions added");
+					res.render('Survey_end');
+					return;
+				}else{
+					console.log("Prdictions could not be added");
+				}
+
+			});
+
+
+		  
+		  } else {
+		    console.log('Error occured');
+		  };
+		});
+		
 
 		
 	});
+
+	router.get('/getAllPred', function(req, res) {
+		prediction.find({}).exec(function(err, result) {
+			console.log(result);
+		});
+	});
+
+
 
 	/* Handle Logout */
 	router.get('/signout', function(req, res) {
