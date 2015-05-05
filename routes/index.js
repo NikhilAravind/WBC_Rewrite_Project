@@ -3,7 +3,6 @@ var router = express.Router();
 
 //Mongoose ODM
 var mongoose = require ("mongoose"); 
-//var db = mongoose.connect('localhost:27017/WBC_Survey');
 
 var userSchema = require('./userschema.js').userSchema
 var user = mongoose.model('userSchema', userSchema,'surveyUsers')
@@ -32,6 +31,8 @@ var isAuthenticated = function (req, res, next) {
 
 module.exports = function(passport){
 
+	//Global question array which is sent to the view to dispaly questions based on a user's preference.
+
 	var questions = {
 						"Arizona": ["Current $ Personal Income","Retail Sales","Wage & Salary Employment","Population Growth","Single-Family Housing Permits"],
 						"California":["Current $ Personal Income","Retail Sales","Wage & Salary Employment","Population Growth","Single-Family Housing Permits"],
@@ -50,6 +51,18 @@ module.exports = function(passport){
 
 
 
+	/*
+
+	This is an init method that populates the DB with all users who are allowed to take the survey.
+	This doesn't mean those users's credentials have been created.
+
+	You can go ahead and creat credentials for any of these users in the sign up page y making sure the email ID provided matches with the one displayed below.
+
+	The newly created user can noe access survey questions of the states that have been repreented in the array below as 1's and 0's.
+	The state array is of the form ["Arizona","California","Colorado","Idaho","Montana","Nevada","New Mexico","Oregon","Texas","Utah","Washington","Wyoming"]
+	A 1 in the 0th index means he would have permission to answer qi=uestion concerning the state of Arizona..and so on.
+
+	*/
 	router.get('/addUserPreference', function(req, res){
 
 				var userData = [
@@ -151,13 +164,6 @@ module.exports = function(passport){
 			userSurveyState = [];
 
 		};
-
-		/*console.log(userJson);
-
-		console.log('***************')
-
-		console.log(userJson[1])*/
-
 		for (var i = 0; i < userJson.length; i++) {
 			
 			var newUser = new user(userJson[i]);
@@ -215,7 +221,7 @@ module.exports = function(passport){
 
 	/* GET login page. */
 	router.get('/', function(req, res) {
-    	// Display the Login page with any flash message, if any
+    	
 		res.render('index', { message: req.flash('message') });
 	});
 
@@ -238,15 +244,36 @@ module.exports = function(passport){
 		failureFlash : true  
 	}));
 
+
+
+
+
+	/*
+	Actual core Survey logic that you need to be concerned with is below. 
+	Ignore all code above. That is just an 'Init code'. Those are already taken care of and need not be run again.
+	*/
+
+
+
+
+
+
+
+
 	/* GET Home Page */
+	/*This handler renders a users home page
+	If the user has previously answered the survey, then his answers will be retrieved
+	and pre populated into the arr array, which is read in home.jade, looped and input fields populated*/
 	router.get('/home', isAuthenticated, function(req, res){
 
 		console.log(req.user.email)
 
+		//Mongoose query for user schema to retrieve a user's details
 		user.find({user_email: req.user.email}).exec(function(err, result) {
 		  if (!err) {
 
 
+		  	//Then, a mongoose query for prediction schema to retrieve a users predictions by his username
 		  	prediction.find({username:req.user.username}).exec(function(err, data){
 
 		  		
@@ -268,21 +295,8 @@ module.exports = function(passport){
 
 			  			var temp = [];
 
-			  			/*for (var i = 0; i < arr.length; i++) {
-			  			 	
-			  			 	if((i+1)%10==0){
-			  			 		temp.push(arr[i]);
-			  			 		userPred.push(temp);
-			  			 		temp = [];
-			  			 	}else{
-			  			 		temp.push(arr[i]);
-			  			 	}
-			  			}; */
-
 		  		}
-		  		
-
-		  		//console.log(userPred);
+		  	
 		  		
 		  			console.log("data available = "+ data[0] )
 		  			res.render('home', { user: req.user, states: result[0].states, surveyQuestions: questions, answers: arr });
@@ -302,30 +316,29 @@ module.exports = function(passport){
 	});
 
 
-	/* POST Submit */
+
+	/* POST Submit 
+	Once a user completes a Survey, this handler is invoked.
+	The surver answers are serialized into one array, with '' for empty answers.
+	This array is them persisted into the prediction Schema. (Which is also retrieved when /home is called to fetch user predictions)
+
+
+	*/
+
 	router.post('/submit', isAuthenticated, function(req, res){
 
-		console.log(req.user.username)
-		console.log(req.user.email)
-		//console.log(req.body.q1Arizona)
-
+		//Mongoose query for prediction schema to retrieve a users predictions by his email ID
 		user.find({user_email: req.user.email}).exec(function(err, result) {
 		  if (!err) {
 		  var numberOfStates = result[0].states.length;
-
-		  //console.log(result[0].states)
-		  //console.log(req.body["q1"+result[0].states[0]]);
-
-		  
+	  
 		   
 		   var projectionsForAState = [];
 		   var allStateProjections = [];
 
 			   for (var i = 0; i < numberOfStates; i++) {
 			   	   	for (var j = 1; j < 11; j++) {
-			   	   		//console.log("q"+j+result[0].states[i]);
-				   		//console.log(req.body["q"+j+result[0].states[i]]);
-				   		projectionsForAState.push(req.body["q"+j+result[0].states[i]]);
+			   	   		projectionsForAState.push(req.body["q"+j+result[0].states[i]]);
 				   	};
 				   	allStateProjections.push(projectionsForAState);
 				   	projectionsForAState = [];
@@ -335,6 +348,7 @@ module.exports = function(passport){
 
 			   console.log(allStateProjections);
 
+			// Create a new schema object with each answer in a loop and persist them
 			var userPrediction = new prediction({
 				username: req.user.username,
 				email: req.user.email,
@@ -346,6 +360,8 @@ module.exports = function(passport){
 			// Delete the _id property, otherwise Mongo will return a "Mod on _id not allowed" error
 			delete upsertData._id;
 
+
+			// The upsert either inserts or updates a users predictions based on existence of his previous answers.
 			prediction.update({username: req.user.username}, upsertData, {upsert: true}, function(err){
 				if(!err){
 					console.log("User predictions added");
@@ -368,6 +384,8 @@ module.exports = function(passport){
 		
 	});
 
+
+	//Admin level call to see data in the DB - localhost:3000/getAllPred
 	router.get('/getAllPred', function(req, res) {
 		prediction.find({}).exec(function(err, result) {
 			console.log(result);
