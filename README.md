@@ -1,13 +1,18 @@
-passport-mongo
-==============
-
-This repository serves as an example of a basic Node.js application which is using [Passport](http://passportjs.org/) as the authentication middleware for authenticating against a locally configured Mongo backend
+WBC Survey
+====================
+This app is built using Node.js, Express and Mongoose.
 
 Steps to run the app
-=====================
-* After cloning the repo, install the dependencies by running **npm install**
-* To start the server, run **npm start** on the base directory
+========================
+* Clone the repo
+* Run (from the mongo installation directory): mongod --dbpath "PATH TO THE DATA FOLDER OF THE REPO" 
+*                                            : mongo
+* Run: npm start
 
-Perquisites
-============
-The server assumes that you have a local mongo instance running. This means if you have mongo installed locally, all you need to do is configure the db.js file correctly and run the mongod daemon
+The core routing method logic is present in /routes/index.js
+
+The application is set up with mongoose schemas for user, predictions.
+
+Jade templating engine is used to render HTML content on the client side.
+
+
